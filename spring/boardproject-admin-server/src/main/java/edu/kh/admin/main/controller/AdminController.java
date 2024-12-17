@@ -22,6 +22,15 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ */
+/**
+ * 
+ */
+/**
+ * 
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:3000"/*, allowCredentials = "true"*/)
 @RequestMapping("admin")
@@ -185,6 +194,43 @@ public class AdminController {
 			return ResponseEntity.status(HttpStatus.OK).body(board);
 		} catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	
+	/** 관리자 계정 목록 조회
+	 * @return
+	 */
+	@GetMapping("adminAccountList")
+	public ResponseEntity<Object> adminAccountList() {
+		try {
+			List<Member> adminList = service.adminAccountList();
+			return ResponseEntity.status(HttpStatus.OK).body(adminList);
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
+	/** 관리자 계정 발급
+	 * @return
+	 */
+	@PostMapping("createAdminAccount")
+	public ResponseEntity<String> createAdminAccount(@RequestBody Member member) {
+		try {
+			String accountPw = service.createAdminAccount(member);
+			
+			log.info("member 1 : " + member);
+			
+			if(accountPw != null) {
+				// 201(자원이 성공적으로 생성되었음을 나타냄)
+				return ResponseEntity.status(HttpStatus.CREATED).body(accountPw);
+			} else {
+				// 204(콘텐츠 없음)
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+			}
+			
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // 500
 		}
 	}
 }
